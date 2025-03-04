@@ -1,10 +1,4 @@
 import React, { useState } from 'react';
-import { ProductServiceClient } from './proto/ProductsServiceClientPb';
-import { Product  } from './proto/products_pb';
-import * as productsPb from './proto/products_pb';
-
-const client = new ProductServiceClient('http://localhost:5000', null, null);
-
 interface ProductObj  {
   id: number;
   name: string;
@@ -12,7 +6,7 @@ interface ProductObj  {
   price: number;
 }
 
-type Protocol = 'rest' | 'graphql' | 'grpc';
+type Protocol = 'rest' | 'graphql' ;
 
 function App() {
   const [protocol, setProtocol] = useState<Protocol>('rest');
@@ -58,20 +52,7 @@ function App() {
         const json = await response.json();
         setProducts(json.data.products);
       } else if (protocol === 'grpc') {
-        const request = new productsPb.Empty()
-        client.getProducts(request, {}, (err, response) => {
-          if (err) {
-            console.error('Lỗi khi lấy sản phẩm qua gRPC:', err);
-            return;
-          }
-          const grpcProducts = response.getProductsList().map((product) => ({
-            id: product.getId(),
-            name: product.getName(),
-            des: product.getDes(),
-            price: product.getPrice(),
-          }));
-          setProducts(grpcProducts);
-        });
+        
       }
 
     } catch (error) {
@@ -231,7 +212,7 @@ function App() {
         >
           <option value="rest">REST</option>
           <option value="graphql">GraphQL</option>
-          <option value="grpc">gRPC</option>
+          {/* <option value="grpc">gRPC</option> */}
         </select>
       </div>
 
